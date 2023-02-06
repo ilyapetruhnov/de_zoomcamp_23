@@ -1,9 +1,8 @@
 import pandas as pd
-import sys
 import argparse
 from sqlalchemy import create_engine
 import os
-import time
+from time import time
 
 def main(params):
 
@@ -12,14 +11,13 @@ def main(params):
     db = params.db
     host = params.host
     port = params.port
-    url = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
+    url = params.url
     table_name = params.table_name
-    file_name = 'output.csv.gz'
+    csv_name = "output.csv"
+    file_name = f"{csv_name}.gz"
 
     os.system(f"wget {url} -O {file_name}")
     os.system(f"gzip -d {file_name}")
-
-    csv_name = "output.csv"
 
     engine = create_engine(f"postgresql://{user}:{password}@{host}:{port}/{db}")
 
@@ -65,6 +63,7 @@ if __name__ == '__main__':
     parser.add_argument('--port', required = True,help='port for postgres')
     parser.add_argument('--db', required = True,help='db for postgres')
     parser.add_argument('--table_name', required = True,help='table_name for postgres')
+    parser.add_argument('--url', required = True,help='url for postgres')
 
     args = parser.parse_args()
     main(args)
