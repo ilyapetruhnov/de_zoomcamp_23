@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Big files
+*.parquet
+*.csv
+*.json
+
+#Folders
+ny_taxi_postgres_data/

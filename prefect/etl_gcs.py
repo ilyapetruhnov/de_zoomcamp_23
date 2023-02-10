@@ -11,10 +11,10 @@ from prefect_gcp.cloud_storage import GcsBucket
 def download_file(url, file_name) -> pd.DataFrame:
     """File download"""
 
-    os.system(f"wget {url} -O {file_name}")
-    os.system(f"gzip -d {file_name}")
+    os.system(f"wget {url} -O {file_name}.gz")
+    os.system(f"gzip -d {file_name}.gz")
 
-    df = pd.read_csv(file_name)
+    df = pd.read_csv(f"{file_name}")
     return df
 
 @task()
@@ -41,12 +41,12 @@ def upload_gcs(path) -> None:
 @flow()
 def etl_web_to_gcs() -> None:
     """The main ETL function"""
-    file_name = "output"
-    dataset_name = f"{file_name}.csv.gz"
-    pq_file_name = f"{file_name}.parquet"
-    url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/{dataset_name}"
+    download_file_name = "yellow_tripdata_2021-06.csv.gz"
+    file_name = "output.csv"
+    pq_file_name = "output.parquet"
+    url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/{download_file_name}"
 
-    df = download_file(url, dataset_name)
+    df = download_file(url, file_name)
     df_processed = process_data(df)
     path = save_locally(df_processed, pq_file_name)
     upload_gcs(path)
