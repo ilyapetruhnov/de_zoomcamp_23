@@ -15,15 +15,17 @@ def read_file(url) -> pd.DataFrame:
 @task()
 def process_data(df) -> pd.DataFrame:
     """Process data"""
-    df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
-    df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
+    col_name_pickup = df.filter(like='pickup_datetime',axis=1).columns[0]
+    col_name_dropoff = df.filter(like='dropoff_datetime',axis=1).columns[0]
+    df[col_name_pickup] = pd.to_datetime(df[col_name_pickup])
+    df[col_name_dropoff] = pd.to_datetime(df[col_name_dropoff])
     return df
 
 @task()
 def save_locally(df, year, month, color) -> Path:
     "Save file locally"
     dataset_file = f"{color}_tripdata_{year}_{month}.parquet"
-    local_save_path = Path(f"data/{color}_{dataset_file}")
+    local_save_path = Path(f"data/{color}/{dataset_file}")
     path = Path(local_save_path)
     df.to_parquet(path)
     return path
