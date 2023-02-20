@@ -34,7 +34,7 @@ def save_locally(df, local_save_path) -> Path:
 def upload_gcs(path) -> None:
     "Upload file to GCS"
     gcs_block = GcsBucket.load("zoomcamp-gcs-bucket")
-    gcs_block.upload_from_path(from_path = path, to_path = path)
+    gcs_block.upload_from_path(from_path = path, to_path = path, timeout=180)
     return None
 
 
